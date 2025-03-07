@@ -1,4 +1,5 @@
 import json
+from Agents.sarsa import SarsaAgent
 from Environment.env import create_environment
 
 def load_config(path):

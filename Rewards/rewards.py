@@ -7,6 +7,9 @@ def calculate_rewards(state, action, previous_state):
     ball_x, ball_owned_team = state['ball'][0], state['ball_owned_team']
     prev_ball_owned_team = previous_state['ball_owned_team']
 
+    print(f"Previous Score: Left {prev_score[0]} - Right {prev_score[1]}")
+    print(f"Current Score:  Left {score[0]} - Right {score[1]}")
+
     # Acciones clave
     PASS_ACTIONS = [9, 10, 11]
     SHOOT_ACTION = 12
@@ -23,13 +26,15 @@ def calculate_rewards(state, action, previous_state):
     - If already winning, the reward is lower.
     - If the match was tied or losing, the reward is higher.
     """
-    # if score[0] > prev_score[0]:  # Se ha marcado un gol a favor
-    #     if prev_score[0] > prev_score[1]:  # Estabas ganando antes
-    #         reward += 8  
-    #     elif prev_score[0] < prev_score[1]:  # Estabas perdiendo antes
-    #         reward += 10  
-    #     else:  # Estabas empatando antes
-    #         reward += 9  
+   
+    if (score[0] - prev_score[0]) == 1:
+        if prev_score[0] > prev_score[1]:  
+            reward += 8  
+        elif prev_score[0] < prev_score[1]:  
+            reward += 10  
+        else:  
+            reward += 9  
+ 
 
     """
     Reward for a successful pass.
@@ -90,13 +95,13 @@ def calculate_rewards(state, action, previous_state):
     - A higher penalty is applied if the team was tied or losing.
     - A lower penalty is applied if the team was already winning.
     """
-    # if score[1] > prev_score[1]:  # El equipo ha recibido un gol en contra
-    #     if prev_score[0] > prev_score[1]:  # Si estabas ganando antes del gol en contra
-    #         reward -= 5  
-    #     elif prev_score[0] < prev_score[1]:  # Si ya estabas perdiendo antes del gol
-    #         reward -= 8  
-    #     else:  # Si el marcador estaba empatado antes del gol en contra
-    #         reward -= 6  
+    if (score[1] - prev_score[1]) == 1:  # Opponent just scored
+        if prev_score[0] > prev_score[1]:  # You were winning before
+            reward -= 5  
+        elif prev_score[0] < prev_score[1]:  # You were already losing
+            reward -= 6  
+        else:  # It was tied before
+            reward -= 8  
 
     """
     Penalty for losing possession in the defensive third.
