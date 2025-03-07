@@ -7,10 +7,6 @@ def calculate_rewards(state, action, previous_state):
     ball_x, ball_owned_team = state['ball'][0], state['ball_owned_team']
     prev_ball_owned_team = previous_state['ball_owned_team']
 
-    print(f"Previous Score: Left {prev_score[0]} - Right {prev_score[1]}")
-    print(f"Current Score:  Left {score[0]} - Right {score[1]}")
-
-    # Acciones clave
     PASS_ACTIONS = [9, 10, 11]
     SHOOT_ACTION = 12
     DRIBBLE_ACTION = 18

@@ -6,6 +6,6 @@
     "time_bins": 18,
     "ball_bins": [15, 15, 7],
     "player_bins": [15, 15],
-    "num_episodes": 1
+    "num_episodes": 1000
   }
   
