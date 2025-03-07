@@ -13,7 +13,7 @@ class SarsaAgent:
         self.num_episodes = config["num_episodes"]
         self.q_table = {}
         self.config = config
-        self.results_file = 'results/sarsa_results.csv'
+        self.results_file = 'Results/sarsa_results.csv'
 
         with open(self.results_file, mode='w', newline='') as file:
             writer = csv.writer(file)
