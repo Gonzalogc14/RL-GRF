@@ -58,7 +58,7 @@ class SarsaAgent:
                 reward = calculate_rewards(next_obs[0], action, last_obs)
                 total_reward += reward
 
-                if action in [9, 10, 11]:  # Acciones de pase
+                if action in [9, 10, 11] and last_obs['ball_owned_team'] == 0:
                     total_passes += 1
                     if next_obs[0]['ball_owned_team'] != 0:
                         failed_passes += 1  # Si no mantiene posesión, cuenta como fallo
