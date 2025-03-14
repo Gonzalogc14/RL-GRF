@@ -61,7 +61,7 @@ class SarsaAgent:
                 if action in [9, 10, 11] and last_obs['ball_owned_team'] == 0:
                     total_passes += 1
                     if next_obs[0]['ball_owned_team'] != 0:
-                        failed_passes += 1  # Si no mantiene posesión, cuenta como fallo
+                        failed_passes += 1
 
                 if state not in self.q_table:
                     self.q_table[state] = np.ones(self.env.action_space.n) * 1.0  

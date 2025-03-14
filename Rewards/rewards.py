@@ -38,7 +38,7 @@ def calculate_rewards(state, action, previous_state):
     - No reward if the pass results in offside.
     """
     if action in PASS_ACTIONS and prev_ball_owned_team == 0 and ball_owned_team == 0 and not state.get('offside', False):
-        reward += 2  
+        reward += 3 
 
     """
     Reward for an assist.
@@ -91,12 +91,12 @@ def calculate_rewards(state, action, previous_state):
     - A higher penalty is applied if the team was tied or losing.
     - A lower penalty is applied if the team was already winning.
     """
-    if (score[1] - prev_score[1]) == 1:  # Opponent just scored
-        if prev_score[0] > prev_score[1]:  # You were winning before
+    if (score[1] - prev_score[1]) == 1:  
+        if prev_score[0] > prev_score[1]:  
             reward -= 5  
-        elif prev_score[0] < prev_score[1]:  # You were already losing
+        elif prev_score[0] < prev_score[1]:  
             reward -= 6  
-        else:  # It was tied before
+        else:  
             reward -= 8  
 
     """
@@ -125,7 +125,7 @@ def calculate_rewards(state, action, previous_state):
     - Applied if a shot goes out of bounds without being saved.
     """
     if action == SHOOT_ACTION and ball_owned_team == -1:  
-        reward -= 2  
+        reward -= 1  
 
     """
     Penalty for a failed dribble.
