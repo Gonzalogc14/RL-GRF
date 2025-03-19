@@ -7,7 +7,7 @@ def load_config(path):
         return json.load(file)
 
 if __name__ == "__main__":
-    config = load_config('config/config.json')
+    config = load_config('Config/config.json')
     env = create_environment()
     agent = SarsaAgent(env, config)
     agent.train()

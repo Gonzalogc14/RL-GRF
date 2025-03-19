@@ -59,7 +59,7 @@ def calculate_rewards(state, action, previous_state):
     - Given if the left team shoots, and the goalkeeper or defense gains possession.
     """
     if action == SHOOT_ACTION and prev_ball_owned_team == 0 and ball_owned_team == 1:
-        reward += 3  
+        reward += 2  
 
     """
     Reward for a successful dribble.
