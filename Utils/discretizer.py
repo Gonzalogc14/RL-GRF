@@ -14,15 +14,21 @@ def discretize_observation(obs, config):
         for p in obs['left_team']
     ]
 
+    # Guardar diferencia de goles sin bins
     score_diff = obs['score'][0] - obs['score'][1]
-    score_state = max(min(score_diff, 3), -3) + 3
-
+    
     steps_state = discretize(obs['steps_left'], 0, config["max_steps"], config["time_bins"])
     game_mode = obs['game_mode']
-    possession = 1 if obs['ball_owned_team'] == 0 else 0
-
+    
+    # Cambiar posesión: 0 si el equipo izquierdo tiene el balón, 1 si no lo tiene
+    possession = 0 if obs['ball_owned_team'] == 0 else 1
+    
+    left_team_yellow = [1 if card else 0 for card in obs['left_team_yellow_card']]
+    
     return tuple(
         [ball_x, ball_y, ball_z] +
         [coord for player in left_team for coord in player] +
-        [score_state, steps_state, game_mode, possession]
+        [score_diff, steps_state, game_mode, possession] +
+        left_team_yellow
     )
+

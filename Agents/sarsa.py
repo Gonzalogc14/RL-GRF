@@ -2,7 +2,7 @@ import numpy as np
 import csv
 from Utils.discretizer import discretize_observation
 from Utils.action_selection import epsilon_greedy_action
-from Rewards.rewards import calculate_rewards
+from Rewards.defensive_rewards import calculate_rewards
 from Utils.calculate_stats import calculate_stats
 
 class SarsaAgent:
@@ -20,7 +20,7 @@ class SarsaAgent:
 
         with open(self.results_file, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Episode", "Total Reward", "Final Score", "Total Passes", "Failed Passes", "Total Shots", "Successful Shots", "Possession Time", "Interceptions", "Ball Recoveries", "Dribbles", "Successful Dribbles", "Tackles"])
+            writer.writerow(["Episode", "Total Reward", "Final Score", "Total Passes", "Failed Passes", "Total Shots", "Successful Shots", "Opponent Shots", "Possession Time", "Interceptions", "Dribbles", "Successful Dribbles", "Tackles"])
 
     def train(self):
         rewards_per_episode = []  
@@ -33,7 +33,7 @@ class SarsaAgent:
             total_reward = 0
             game_stats = {
                 "total_passes": 0, "failed_passes": 0, "total_shots": 0, "successful_shots": 0,
-                "possession_time": 0, "interceptions": 0, "ball_recoveries": 0, "dribbles": 0,
+                "opponent_shots": 0, "possession_time": 0, "interceptions": 0, "dribbles": 0,
                 "successful_dribbles": 0, "tackles": 0
             }
             done = False
@@ -44,7 +44,7 @@ class SarsaAgent:
                 next_state = discretize_observation(next_obs[0], self.config)
                 next_action = epsilon_greedy_action(self.q_table, next_state, self.env.action_space, self.epsilon)
 
-                reward = calculate_rewards(next_obs[0], action, last_obs)
+                reward = calculate_rewards(state, action, next_state)
                 total_reward += reward
 
                 calculate_stats(game_stats, action, last_obs, next_obs[0])
@@ -69,3 +69,4 @@ class SarsaAgent:
                 self.epsilon *= self.epsilon_decay
 
         return rewards_per_episode
+
