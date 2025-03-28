@@ -44,7 +44,7 @@ class SarsaAgent:
                 next_state = discretize_observation(next_obs[0], self.config)
                 next_action = epsilon_greedy_action(self.q_table, next_state, self.env.action_space, self.epsilon)
 
-                reward = calculate_rewards(state, action, next_state)
+                reward = calculate_rewards(next_state, action ,state)
                 total_reward += reward
 
                 calculate_stats(game_stats, action, last_obs, next_obs[0])

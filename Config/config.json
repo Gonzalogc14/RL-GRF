@@ -1,13 +1,15 @@
 {
     "alpha": 0.015,
-    "gamma": 0.95,  
-    "epsilon_start": 1.0,  
+    "gamma": 0.99,  
+    "epsilon_start": 1,  
     "epsilon_min": 0.1,  
     "epsilon_decay": 0.997,
     "max_steps": 3000,
     "time_bins": 18,
-    "ball_bins": [15, 15, 7],
-    "player_bins": [15, 15],
+    "ball_bins": [20, 15, 7],
+    "ball_dir_bins": [12, 12, 10],  
+    "player_bins": [15, 15],  
+    "player_dir_bins": [12, 12], 
     "num_episodes": 1000
   }
   

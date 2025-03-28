@@ -3,85 +3,89 @@ def calculate_rewards(state, action, previous_state):
     Calculates rewards and penalties for the left team based on the current and previous state.
     """
     reward = 0
-    score, prev_score = state[-4], previous_state[-4]  # Usa índice negativo para score_state
+    score, prev_score = state[25], previous_state[25]  
     ball_x = state[0]  
-    ball_owned_team, prev_ball_owned_team = state[-2], previous_state[-2]  # Usa el penúltimo valor  
-    left_team_yellow_cards, prev_left_team_yellow_cards = state[-11:], previous_state[-11:]  # Últimos 11 valores  
-    
+    ball_owned_team, prev_ball_owned_team = state[28], previous_state[28]  
+    left_team_yellow_cards, prev_left_team_yellow_cards = state[29:], previous_state[29:] 
+
     PASS_ACTIONS = [9, 10, 11]
     SHOOT_ACTION = 12
     DRIBBLE_ACTION = 18
     TACKLE_ACTION = 16
     
-    # POSITIVE REWARDS
+    """
+    POSITIVE REWARDS
+    """
     
     ## Rewards for possession gain
+    #
     if prev_ball_owned_team == 1 and ball_owned_team == 0:
-        reward += 8  # General possession recovery reward
+        reward += 4  
         if ball_x < 5:
-            reward += 10  # Extra for recovering in the defensive zone
+           reward += 4  
         elif 5 <= ball_x <= 10:
-            reward += 6  # Extra for midfield recovery
+           reward += 4 
         if action == TACKLE_ACTION:
-            reward += 10  # Extra for successful tackle recovery
+           reward += 7 
     
-    ## Rewards for offensive plays
     if score > prev_score:
-        reward += 200  # Scoring a goal
+       reward += 500  # Scoring a goal
     
     if action in PASS_ACTIONS and prev_ball_owned_team == 0 and ball_owned_team == 0:
-        reward += 5 if action == 9 else 3  # Long pass (5) vs short pass (3)
+        reward += 6 if action == 9 else 3  # Long pass (5) vs short pass (3)
     
     if state[35] == 4 and ball_owned_team == 0:
-        reward += 4  # Winning a corner
+       reward += 5  # Winning a corner
 
     
     ## Defensive positioning reward
     if ball_owned_team == 1:
-        left_team_positions = state[3:25]  # Extract left team positions (11 players * 2 coordinates)
-        for i in range(0, 22, 2):  # Iterate over x-coordinates of the 11 players
+        left_team_positions = state[3:25]  
+        for i in range(0, 22, 2):  
             if left_team_positions[i] < -0.5:
-               reward += 0.1  # Defensive positioning bonus
+               reward += 1  
     
     ## Rewards for dribbling success
     if action == DRIBBLE_ACTION and prev_ball_owned_team == 0 and ball_owned_team == 0:
-        reward += 6  # Successful dribble
+       reward += 6  
 
-        ## Reward for committing fouls without a yellow card
+    ## Reward for committing fouls without a yellow card
     if state[35] == 3 and prev_ball_owned_team != 0 and not any(left_team_yellow_cards):
-        reward += 3
-    
-    # NEGATIVE PENALTIES
-    
+        reward += 4
+
+    """
+    NEGATIVE PENALTIES
+    """
+
     ## Severe penalty for conceding a goal
     if score < prev_score:
-        reward -= 200  
+        reward -= 400  
     
     ## Possession loss penalties
     if prev_ball_owned_team == 0 and ball_owned_team != 0:
         if ball_x < 5:
-            reward -= 6  # Losing possession in the defensive zone
+            reward -= 6 
         if action in PASS_ACTIONS and ball_x < 5:
-            reward -= 5  # Risky pass interception in the defensive zone
+            reward -= 5  
     
     ## Defensive errors
     if action == TACKLE_ACTION and ball_x < 5 and ball_owned_team != 0:
-        reward -= 4  # Foul near the goal
+        reward -= 6 
     
     if action == SHOOT_ACTION and prev_ball_owned_team == 1:
-        reward -= 6  # Allowing too many opponent shots
+        reward -= 6  
     
     if prev_ball_owned_team == 1 and ball_owned_team == -1 and action == SHOOT_ACTION and ball_x < -0.5:
-        reward -= 7  # Allowing opponent shots from defensive zone
+        reward -= 5  
     
     ## Card penalties
     for i in range(len(left_team_yellow_cards)):
         if left_team_yellow_cards[i] > prev_left_team_yellow_cards[i]:
-            reward -= 2  # Receiving a yellow card
+            reward -= 5  
     
     ## Penalty for failing a dribble
     if action == DRIBBLE_ACTION and prev_ball_owned_team == 0 and ball_owned_team != 0:
-        reward -= 4  # Failed dribble
+        reward -= 6 
     
     return reward
 
